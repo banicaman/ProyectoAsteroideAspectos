@@ -7,6 +7,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 /**
  *
@@ -27,7 +31,7 @@ public class Nave extends JPanel {
         this.posY = 195;
     }
 
-    void mover() {
+    void mover() throws UnsupportedAudioFileException, IOException, MalformedURLException, LineUnavailableException {
         if(posX + desX > juego.getWidth() - this.ANCHO ){
             desX = 0;
         }

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package asteroides;
+
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,6 +11,11 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import javax.sound.sampled.*;
+import java.net.URL;
+import java.io.*;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -23,11 +29,12 @@ public class Juego extends JPanel {
     public ArrayList<Asteroide> getAsteroides() {
         return asteroides;
     }
-    
+
     private Nave nave;
     private ArrayList<Asteroide> asteroides;
-    
-    public Juego(){
+
+    public Juego() {
+
         // Inicializar los objetos del juego
         nave = new Nave(this);
         asteroides = new ArrayList();
@@ -49,12 +56,13 @@ public class Juego extends JPanel {
             }
         });
         setFocusable(true);
-        
+
     }
-    
-    public static void main(String[] args) throws InterruptedException {
+
+    public static void main(String[] args) throws InterruptedException, MalformedURLException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+
         Juego juego = new Juego();
-        
+
         JFrame frame = new JFrame("Colision de Asteroides con Programacion Orientada a Aspecto");
         frame.add(juego);
         frame.setResizable(false);
@@ -62,32 +70,32 @@ public class Juego extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
         int iteraciones = 0;
-        while(true){
+        while (true) {
             juego.mover();
             juego.repaint();
             Thread.sleep(10);
             iteraciones++;
-            if(iteraciones % 500 == 0){
+            if (iteraciones % 500 == 0) {
                 juego.anadeAsteroide();
             }
         }
     }
-    
+
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         super.paint(g);//Necesario para limpiar la pantalla antes de volver a pintar
-        for(Asteroide asteroide:getAsteroides()){
+        for (Asteroide asteroide : getAsteroides()) {
             asteroide.paint(g);
         }
         nave.paint(g);
     }
-    
+
     /**
      * Se encarga de mover los elementos del juego
      */
-    private void mover(){
+    private void mover() throws UnsupportedAudioFileException, IOException, MalformedURLException, LineUnavailableException {
         nave.mover();
-        for(Asteroide asteroide:getAsteroides()){
+        for (Asteroide asteroide : getAsteroides()) {
             asteroide.mover();
         }
     }
@@ -97,8 +105,17 @@ public class Juego extends JPanel {
         getAsteroides().add(asteroide);
     }
 
-    void gameOver() {
+    void gameOver() throws MalformedURLException, UnsupportedAudioFileException, IOException, LineUnavailableException {
+        URL file = new URL("https://www.wavsource.com/snds_2020-10-01_3728627494378403/sfx/applause_y.wav");
+        //  URL file = new URL("https://drive.google.com/file/d/1QUIarzX2CzFGoIzjQ3mWjtH2NLl4W4bu/view");
+
+//        URL file = new URL("./audio.wav");
+        AudioInputStream ais = AudioSystem.getAudioInputStream(file);
+        Clip clip = AudioSystem.getClip();
+        clip.open(ais);
+        clip.start();
         JOptionPane.showMessageDialog(this, "Game over", "Game over", JOptionPane.YES_NO_OPTION);
+
         System.exit(ABORT);
     }
 }
